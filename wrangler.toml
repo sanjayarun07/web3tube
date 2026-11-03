@@ -1,0 +1,4 @@
+# Cloudflare Pages project "web3tube": `make deploy` uploads web/ (no build step); web/_headers applies.
+name = "web3tube"
+pages_build_output_dir = "web"
+compatibility_date = "2026-10-01"

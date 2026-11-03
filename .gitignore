@@ -1,0 +1,14 @@
+# Secrets: keys live in .env (see .env.example)
+.env
+.env.*
+!.env.example
+# Crawl data, HTTP cache, labels and usage logs (large, rebuildable)
+data/
+dist/
+.wrangler/
+node_modules/
+__pycache__/
+.pytest_cache/
+.venv/
+*.zip
+.DS_Store

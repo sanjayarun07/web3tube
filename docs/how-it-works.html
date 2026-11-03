@@ -1,0 +1,323 @@
+<title>How Web3Tube Ranks</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@500;700;800&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: a single reading column (an evidence ledger), with wide tables in their own scroll boxes. */
+:root {
+  --bg: #f6f7f9;
+  --surface: #ffffff;
+  --ink: #161b26;
+  --muted: #5b6475;
+  --rule: #dde1e8;
+  --accent: #2f55d4;
+  --accent-soft: #e6ecfc;
+  --good: #1f7a4d;
+  --good-soft: #e3f3ea;
+  --warn: #9a5b00;
+  --warn-soft: #fbf0dc;
+  --bad: #b3261e;
+  --bad-soft: #fbe5e3;
+  --display: "Schibsted Grotesk", "Helvetica Neue", Arial, sans-serif;
+  --body: "Source Serif 4", Georgia, "Times New Roman", serif;
+  --mono: "JetBrains Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0f131b; --surface: #171c27; --ink: #e8ebf2; --muted: #9aa3b5; --rule: #2a3142;
+    --accent: #8aa6ff; --accent-soft: #1f2a4a; --good: #6fd29f; --good-soft: #15301f;
+    --warn: #f0b35a; --warn-soft: #33260f; --bad: #ff8d84; --bad-soft: #3a1a18; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0f131b; --surface: #171c27; --ink: #e8ebf2; --muted: #9aa3b5; --rule: #2a3142;
+  --accent: #8aa6ff; --accent-soft: #1f2a4a; --good: #6fd29f; --good-soft: #15301f;
+  --warn: #f0b35a; --warn-soft: #33260f; --bad: #ff8d84; --bad-soft: #3a1a18; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 17px; line-height: 1.6;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 40px 72px;
+}
+.wrap { max-width: 860px; margin: 0 auto; display: grid; gap: 56px; }
+h1, h2, h3 { font-family: var(--display); text-wrap: balance; line-height: 1.15; margin: 0; }
+h1 { font-size: clamp(2rem, 5vw, 3rem); font-weight: 800; letter-spacing: -0.02em; }
+h2 { font-size: 1.6rem; font-weight: 700; letter-spacing: -0.01em; }
+h3 { font-size: 1.1rem; font-weight: 700; }
+p { margin: 0; max-width: 66ch; }
+section { display: grid; gap: 18px; min-width: 0; }
+.eyebrow { font-family: var(--mono); font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); }
+.lede { font-size: 1.2rem; color: var(--muted); }
+code, .mono { font-family: var(--mono); font-size: 0.85em; }
+a { color: var(--accent); }
+a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+header { display: grid; gap: 14px; }
+.stamp { font-family: var(--mono); font-size: 0.8rem; color: var(--muted); }
+
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1px; background: var(--rule); border: 1px solid var(--rule); border-radius: 10px; overflow: hidden; }
+.stat { background: var(--surface); padding: 16px 18px; display: grid; gap: 2px; }
+.stat b { font-family: var(--display); font-size: 1.6rem; font-variant-numeric: tabular-nums; }
+.stat span { font-size: 0.85rem; color: var(--muted); font-family: var(--display); }
+
+.flow { display: grid; gap: 0; counter-reset: step; }
+.step { display: grid; grid-template-columns: 44px 1fr; gap: 14px; padding: 14px 0; border-top: 1px solid var(--rule); }
+.step:last-child { border-bottom: 1px solid var(--rule); }
+.step::before { counter-increment: step; content: counter(step); font-family: var(--mono); font-weight: 600; color: var(--accent); background: var(--accent-soft); width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center; font-size: 0.85rem; }
+.step h3 { margin-bottom: 4px; }
+.step p { font-size: 0.97rem; color: var(--muted); }
+.step .cmd { font-family: var(--mono); font-size: 0.78rem; color: var(--ink); }
+
+.tbl { overflow-x: auto; border: 1px solid var(--rule); border-radius: 10px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: 0.92rem; }
+th, td { text-align: left; padding: 9px 14px; border-bottom: 1px solid var(--rule); white-space: nowrap; }
+th { font-family: var(--display); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); font-weight: 700; }
+td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; font-family: var(--mono); font-size: 0.85rem; }
+tr.group td { font-family: var(--display); font-weight: 700; background: var(--bg); color: var(--ink); font-size: 0.85rem; }
+tr:last-child td { border-bottom: 0; }
+.chip { display: inline-block; font-family: var(--display); font-size: 0.72rem; font-weight: 700; padding: 2px 8px; border-radius: 999px; letter-spacing: 0.02em; }
+.chip.partial { background: var(--warn-soft); color: var(--warn); }
+.chip.blocked { background: var(--bad-soft); color: var(--bad); }
+
+.labels { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; }
+.label { background: var(--surface); border: 1px solid var(--rule); border-radius: 10px; padding: 14px 16px; display: grid; gap: 6px; min-width: 0; }
+.label .top { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+.label h3 { font-size: 1rem; }
+.label .w { font-family: var(--mono); font-size: 0.85rem; font-weight: 600; }
+.label p { font-size: 0.93rem; color: var(--muted); }
+.label.rec .w { color: var(--good); }
+.label.ref .w { color: var(--accent); }
+.label.zero .w { color: var(--muted); }
+
+.signals { display: grid; gap: 14px; }
+.sig { display: grid; grid-template-columns: minmax(0, 1fr); gap: 6px; }
+.sig .row { display: flex; justify-content: space-between; gap: 12px; align-items: baseline; }
+.sig .row b { font-family: var(--display); }
+.sig .row span { font-family: var(--mono); font-size: 0.9rem; font-weight: 600; color: var(--accent); }
+.bar { height: 8px; background: var(--rule); border-radius: 4px; overflow: hidden; }
+.bar i { display: block; height: 100%; background: var(--accent); border-radius: 4px; }
+.sig p { font-size: 0.93rem; color: var(--muted); }
+
+.formula { background: var(--surface); border: 1px solid var(--rule); border-radius: 10px; padding: 16px 18px; overflow-x: auto; }
+.formula pre { margin: 0; font-family: var(--mono); font-size: 0.82rem; line-height: 1.7; color: var(--ink); }
+
+ul.plain { margin: 0; padding-left: 1.2em; display: grid; gap: 8px; max-width: 66ch; }
+ul.plain li::marker { color: var(--accent); }
+
+.example { background: var(--surface); border: 1px solid var(--rule); border-radius: 12px; padding: 20px; display: grid; gap: 16px; min-width: 0; }
+.example .title { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 16px; align-items: baseline; }
+.example .score { font-family: var(--mono); font-size: 1.5rem; font-weight: 600; color: var(--accent); }
+.calc td:first-child { font-family: var(--display); }
+.ev { display: grid; gap: 10px; }
+.ev div { border-left: 3px solid var(--good); padding: 4px 0 4px 12px; font-size: 0.93rem; }
+.ev div.neutral { border-left-color: var(--accent); }
+.ev small { display: block; font-family: var(--mono); font-size: 0.75rem; color: var(--muted); }
+
+.gaps { display: grid; gap: 10px; }
+.gap { display: grid; grid-template-columns: 96px 1fr; gap: 12px; align-items: start; padding: 10px 0; border-top: 1px solid var(--rule); }
+.gap:last-child { border-bottom: 1px solid var(--rule); }
+.gap p { font-size: 0.95rem; }
+.gap .chip { justify-self: start; }
+.chip.later { background: var(--accent-soft); color: var(--accent); }
+@media (max-width: 520px) {
+  .gap { grid-template-columns: 1fr; gap: 4px; }
+  .step { grid-template-columns: 36px 1fr; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Web3Tube · ranking and sources</div>
+    <h1>How Web3Tube ranks crypto videos</h1>
+    <p class="lede">Web3Tube ranks a video by how often credible people in builder and research communities have recommended it, across years and across communities. Views, likes on YouTube and follower counts are never used.</p>
+    <div class="stamp">Build of 3 November 2026. 1,680 videos in the catalog; every mentioned video that still exists has been labelled.</div>
+  </header>
+
+  <section aria-labelledby="glance">
+    <h2 id="glance">This build at a glance</h2>
+    <div class="stats">
+      <div class="stat"><b>829,625</b><span>forum posts and HN items read</span></div>
+      <div class="stat"><b>31</b><span>communities with data</span></div>
+      <div class="stat"><b>45,474</b><span>video mentions found (incl. replies)</span></div>
+      <div class="stat"><b>28,649</b><span>distinct videos mentioned</span></div>
+      <div class="stat"><b>25,263</b><span>videos labelled by Claude Haiku</span></div>
+      <div class="stat"><b>1,680</b><span>videos in the catalog</span></div>
+    </div>
+  </section>
+
+  <section aria-labelledby="pipeline">
+    <h2 id="pipeline">The pipeline</h2>
+    <p>Each step writes a file the next one reads, and each can be rerun without repeating finished work.</p>
+    <div class="flow">
+      <div class="step"><div><h3>Crawl the communities</h3><p>Public Discourse forums (newest posts first) and Hacker News via the Algolia API. Each post keeps its author, the author's forum trust level, date, likes and the thread it sits in.</p><div class="cmd">make crawl · make social</div></div></div>
+      <div class="step"><div><h3>Find the videos</h3><p>Every YouTube link is normalised to its 11-character video id. The sentences around the link and any direct replies to the post are kept as the mention's context.</p><div class="cmd">make extract</div></div></div>
+      <div class="step"><div><h3>Fetch YouTube details</h3><p>Title, channel, description, duration, captions flag, and whether the video is public and embeddable, from the YouTube Data API. Nothing is downloaded. Deleted and private videos drop out here.</p><div class="cmd">make enrich</div></div></div>
+      <div class="step"><div><h3>Label every mention with Claude</h3><p>One Claude Haiku call per video sees its metadata and all its mentions. It labels each mention, quotes the evidence word for word, flags self-promotion, and judges the video's topics, technical depth, audience, shill risk and whether it is still current.</p><div class="cmd">make classify</div></div></div>
+      <div class="step"><div><h3>Score and filter</h3><p>Six weighted signals, then anti-shilling penalties, then the inclusion rules below. The result is <span class="mono">web/catalog.json</span>.</p><div class="cmd">make score</div></div></div>
+      <div class="step"><div><h3>Serve a static site</h3><p>Plain HTML, CSS and JavaScript reading the catalog. No login; preferences stay in the browser. Every video shows the posts that put it there.</p><div class="cmd">make serve</div></div></div>
+    </div>
+  </section>
+
+  <section aria-labelledby="sources">
+    <h2 id="sources">Sources covered</h2>
+    <p>The community weight scales how much one recommendation from that place counts. Research forums count most; governance forums and general communities count less because more of their links are announcements and promotion.</p>
+    <div class="tbl">
+      <table>
+        <thead><tr><th>Community</th><th class="num">Posts read</th><th class="num">Video mentions</th><th class="num">Weight</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr class="group"><td colspan="5">Ethereum research</td></tr>
+          <tr><td>Ethereum Research (ethresear.ch)</td><td class="num">20,484</td><td class="num">370</td><td class="num">1.0</td><td></td></tr>
+          <tr><td>Ethereum Magicians</td><td class="num">35,335</td><td class="num">1,060</td><td class="num">1.0</td><td></td></tr>
+          <tr class="group"><td colspan="5">Ethereum L2s and infrastructure</td></tr>
+          <tr><td>Arbitrum Research</td><td class="num">436</td><td class="num">6</td><td class="num">0.8</td><td></td></tr>
+          <tr><td>Starknet Community</td><td class="num">6,755</td><td class="num">75</td><td class="num">0.8</td><td></td></tr>
+          <tr><td>Aztec Forum</td><td class="num">2,110</td><td class="num">28</td><td class="num">0.8</td><td></td></tr>
+          <tr><td>Celestia Forum</td><td class="num">866</td><td class="num">12</td><td class="num">0.8</td><td></td></tr>
+          <tr><td>Arbitrum DAO Forum</td><td class="num">32,896</td><td class="num">473</td><td class="num">0.6</td><td></td></tr>
+          <tr><td>Optimism Governance</td><td class="num">24,213</td><td class="num">623</td><td class="num">0.6</td><td></td></tr>
+          <tr><td>Polygon Forum</td><td class="num">7,171</td><td class="num">80</td><td class="num">0.6</td><td></td></tr>
+          <tr><td>Scroll Forum</td><td class="num">2,237</td><td class="num">59</td><td class="num">0.6</td><td></td></tr>
+          <tr><td>ZKsync (ZK Nation) Forum</td><td class="num">1,984</td><td class="num">32</td><td class="num">0.6</td><td></td></tr>
+          <tr><td>EigenLayer Forum</td><td class="num">1,097</td><td class="num">55</td><td class="num">0.6</td><td></td></tr>
+          <tr class="group"><td colspan="5">DeFi and application governance</td></tr>
+          <tr><td>Lido Research</td><td class="num">11,803</td><td class="num">252</td><td class="num">0.7</td><td></td></tr>
+          <tr><td>MakerDAO / Sky Forum</td><td class="num">62,506</td><td class="num">2,899</td><td class="num">0.6</td><td></td></tr>
+          <tr><td>Aave Governance</td><td class="num">25,124</td><td class="num">98</td><td class="num">0.6</td><td></td></tr>
+          <tr><td>Uniswap Governance</td><td class="num">12,057</td><td class="num">80</td><td class="num">0.6</td><td></td></tr>
+          <tr><td>ENS Forum</td><td class="num">22,469</td><td class="num">353</td><td class="num">0.6</td><td></td></tr>
+          <tr><td>Celo Forum</td><td class="num">10,296</td><td class="num">192</td><td class="num">0.6</td><td></td></tr>
+          <tr class="group"><td colspan="5">Bitcoin and privacy</td></tr>
+          <tr><td>Delving Bitcoin</td><td class="num">4,900</td><td class="num">48</td><td class="num">1.0</td><td></td></tr>
+          <tr><td>Zcash Community Forum</td><td class="num">169,938</td><td class="num">6,221</td><td class="num">0.8</td><td><span class="chip partial">partial</span></td></tr>
+          <tr><td>Stacks Forum</td><td class="num">2,024</td><td class="num">59</td><td class="num">0.6</td><td></td></tr>
+          <tr class="group"><td colspan="5">Other layer 1s</td></tr>
+          <tr><td>Anoma Research</td><td class="num">2,555</td><td class="num">74</td><td class="num">0.9</td><td></td></tr>
+          <tr><td>Solana Forum</td><td class="num">797</td><td class="num">4</td><td class="num">0.8</td><td></td></tr>
+          <tr><td>Cosmos Forum</td><td class="num">19,427</td><td class="num">304</td><td class="num">0.6</td><td></td></tr>
+          <tr><td>Osmosis Forum</td><td class="num">4,614</td><td class="num">15</td><td class="num">0.6</td><td></td></tr>
+          <tr><td>Polkadot Forum</td><td class="num">20,432</td><td class="num">830</td><td class="num">0.6</td><td></td></tr>
+          <tr><td>NEAR Governance</td><td class="num">90,250</td><td class="num">5,791</td><td class="num">0.6</td><td></td></tr>
+          <tr><td>Sui Forum</td><td class="num">7,110</td><td class="num">17</td><td class="num">0.6</td><td></td></tr>
+          <tr><td>DFINITY / Internet Computer</td><td class="num">66,988</td><td class="num">723</td><td class="num">0.6</td><td></td></tr>
+          <tr><td>Cardano Forum</td><td class="num">152,150</td><td class="num">16,778</td><td class="num">0.4</td><td><span class="chip partial">partial</span></td></tr>
+          <tr class="group"><td colspan="5">General tech communities</td></tr>
+          <tr><td>Hacker News</td><td class="num">8,601</td><td class="num">7,863</td><td class="num">0.8</td><td></td></tr>
+          <tr><td>Reddit (25 subreddits)</td><td class="num">0</td><td class="num">0</td><td class="num">0.5</td><td><span class="chip blocked">blocked</span></td></tr>
+          <tr><td>Aptos, Avalanche, Filecoin forums</td><td class="num">0</td><td class="num">0</td><td class="num">0.6</td><td><span class="chip blocked">unreachable</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>Conference archives are used as seeds: 21,305 talks from Devcon / Ethereum Foundation, ETHGlobal and the Zero Knowledge podcast. A seed marks a video as a conference talk and adds a small bonus, but a seed alone never puts a video in the catalog.</p>
+  </section>
+
+  <section aria-labelledby="labels">
+    <h2 id="labels">How each mention is labelled</h2>
+    <p>A link is not an endorsement. Most forum links are meeting recordings, announcements or passing references, so Claude reads the words around each link and picks one label. The number is how much that label counts toward a recommendation.</p>
+    <div class="labels">
+      <div class="label rec"><div class="top"><h3>Recommendation</h3><span class="w">× 1.0</span></div><p>The author endorses it or relies on it as a trusted source: "great talk on X", "this explains it well".</p></div>
+      <div class="label ref"><div class="top"><h3>Neutral reference</h3><span class="w">× 0.35</span></div><p>Cited without a judgement: call recordings, "here is the recording", reading lists.</p></div>
+      <div class="label zero"><div class="top"><h3>Criticism</h3><span class="w">× 0</span></div><p>Says the video is wrong, misleading or outdated. Counts against it in discussion quality.</p></div>
+      <div class="label zero"><div class="top"><h3>Promotion</h3><span class="w">× 0, penalised</span></div><p>Marketing, shilling, referral spam, or advertising one's own product or event.</p></div>
+      <div class="label zero"><div class="top"><h3>Unrelated</h3><span class="w">× 0</span></div><p>The link is incidental, or the text says nothing about the video.</p></div>
+    </div>
+    <p>Separately, a mention is flagged as self-promotion when the author appears to be the speaker or uploader. Those count at a quarter of their weight.</p>
+  </section>
+
+  <section aria-labelledby="voices">
+    <h2 id="voices">How much one voice counts</h2>
+    <p>Each person gets one vote per video, their strongest mention. The weight of that vote is:</p>
+    <div class="formula"><pre>vote = label weight × strength (0.3–1.0, from Claude)
+     × author credibility
+     × community weight
+     × 0.25 if self-promotion
+
+author credibility = 0.7 × forum trust level   (TL0 0.3 · TL1 0.5 · TL2 0.75 · TL3 0.9 · TL4 1.0; staff +0.1)
+                   + 0.3 × how established     (log of the author's posts with videos, full at 50)</pre></div>
+    <p>Votes are summed per community with diminishing returns, and no single community may supply more than 60% of a video's recommendation weight. Each author who promoted the video subtracts 0.5.</p>
+  </section>
+
+  <section aria-labelledby="signals">
+    <h2 id="signals">The six signals</h2>
+    <p>Each signal is a number from 0 to 1. The score is their weighted sum. These weights are the starting proposal and have not been tuned against real outcomes yet.</p>
+    <div class="signals">
+      <div class="sig"><div class="row"><b>Independent credible recommendations</b><span>30%</span></div><div class="bar"><i style="width:100%"></i></div><p>The vote total above, saturating so that the first few strong voices matter most.</p></div>
+      <div class="sig"><div class="row"><b>Technical depth</b><span>25%</span></div><div class="bar"><i style="width:83.3%"></i></div><p>Claude's judgement of the video from its title, description and the discussion around it.</p></div>
+      <div class="sig"><div class="row"><b>Discussion quality</b><span>15%</span></div><div class="bar"><i style="width:50%"></i></div><p>Recommendations against criticism, each weighted by strength and author credibility. 0.5 means neutral.</p></div>
+      <div class="sig"><div class="row"><b>Recommended across years</b><span>15%</span></div><div class="bar"><i style="width:50%"></i></div><p>Distinct calendar years with an endorsing voice. Four or more years scores full marks.</p></div>
+      <div class="sig"><div class="row"><b>Captions and still current</b><span>10%</span></div><div class="bar"><i style="width:33.3%"></i></div><p>Half for having captions, half for Claude's "still current" judgement. Transcripts are not fetched, so this is a proxy.</p></div>
+      <div class="sig"><div class="row"><b>Engagement on the recommending posts</b><span>5%</span></div><div class="bar"><i style="width:16.7%"></i></div><p>Likes on the forum posts that recommend the video, log-scaled. YouTube views are never used.</p></div>
+    </div>
+  </section>
+
+  <section aria-labelledby="shill">
+    <h2 id="shill">Anti-shilling controls</h2>
+    <ul class="plain">
+      <li><b>One vote per author.</b> Posting the same link ten times counts once.</li>
+      <li><b>Bursts collapse.</b> Three or more low-trust accounts posting the same video within three days count as one.</li>
+      <li><b>Community cap.</b> No single community supplies more than 60% of a video's recommendation weight.</li>
+      <li><b>Promotion subtracts.</b> Each promoting author removes 0.5 of recommendation weight; self-promotion counts at 25%.</li>
+      <li><b>Sponsor language.</b> Phrases like "use my code", "referral", "airdrop", "100x" or "price prediction" in the description cut the score by 20%.</li>
+      <li><b>Shill risk.</b> The score is multiplied by (1 − 0.7 × Claude's shill-risk estimate).</li>
+      <li><b>No popularity inputs.</b> YouTube views, subscriber counts and follower counts are never read.</li>
+    </ul>
+  </section>
+
+  <section aria-labelledby="inclusion">
+    <h2 id="inclusion">What gets into the catalog</h2>
+    <ul class="plain">
+      <li>The video is still public and embeddable on YouTube.</li>
+      <li>Claude has labelled its mentions.</li>
+      <li>It is about crypto: its title, channel, description or Claude's summary names a crypto term as a whole word (about 100 terms, such as zk-SNARK, rollup, Zcash or proof of stake). General communities like Hacker News also link plenty of unrelated videos; this filter removed 6,607 of them.</li>
+      <li>At least one independent recommendation, or at least three independent neutral references.</li>
+      <li>A final score of at least 0.22.</li>
+    </ul>
+    <p>Of 28,649 mentioned videos, 1,680 made the catalog. Most of the rest were left out for having too few independent voices (14,845), being off-topic (6,607) or no longer being on YouTube (4,848).</p>
+    <h3>Separate shelves</h3>
+    <p>A second, small Claude pass tags each catalog video's stance. Videos that argue against crypto or the industry (39 of them, such as James Mickens' "Blockchains Are a Bad Idea") go on a "Critiques &amp; skeptics" shelf. Market and trading content (134 videos) goes on a labelled Markets shelf. Neither appears on the builder shelves, but both can still be found through search.</p>
+  </section>
+
+  <section aria-labelledby="example">
+    <h2 id="example">A worked example</h2>
+    <div class="example">
+      <div class="title"><h3>Devcon4 Mainstage · Justin Drake</h3><span class="score">0.545</span></div>
+      <p>Ranked first in the Ethereum-only build. Three independent voices in two communities, endorsed in 2018 and 2019.</p>
+      <div class="tbl">
+        <table class="calc">
+          <thead><tr><th>Signal</th><th class="num">Value</th><th class="num">Weight</th><th class="num">Points</th></tr></thead>
+          <tbody>
+            <tr><td>Credible recommendations</td><td class="num">0.400</td><td class="num">0.30</td><td class="num">0.120</td></tr>
+            <tr><td>Technical depth</td><td class="num">0.800</td><td class="num">0.25</td><td class="num">0.200</td></tr>
+            <tr><td>Discussion quality</td><td class="num">0.772</td><td class="num">0.15</td><td class="num">0.116</td></tr>
+            <tr><td>Across years (2 of 4)</td><td class="num">0.500</td><td class="num">0.15</td><td class="num">0.075</td></tr>
+            <tr><td>Captions and still current</td><td class="num">0.300</td><td class="num">0.10</td><td class="num">0.030</td></tr>
+            <tr><td>Engagement</td><td class="num">0.476</td><td class="num">0.05</td><td class="num">0.024</td></tr>
+            <tr><td>Sum</td><td class="num"></td><td class="num"></td><td class="num">0.565</td></tr>
+            <tr><td>× (1 − 0.7 × shill risk 0.05)</td><td class="num"></td><td class="num"></td><td class="num">0.545</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="ev">
+        <div><b>Recommendation</b>, Ethereum Research, 2019: "Thanks for the great design and [video] talk, Justin."<small>coventry · ethresear.ch</small></div>
+        <div><b>Recommendation</b>, Ethereum Magicians, 2018: cited as the source for a design point.<small>mariapaulafn · ethereum-magicians.org</small></div>
+        <div class="neutral"><b>Neutral reference</b>, Ethereum Research, 2019: the speaker linking his own talk (self-promotion, 25% weight).<small>JustinDrake · ethresear.ch</small></div>
+      </div>
+      <p>It is also flagged <span class="mono">partly_outdated</span>, which the site shows on the card.</p>
+    </div>
+  </section>
+
+  <section aria-labelledby="gaps">
+    <h2 id="gaps">Known gaps, on hold until after testing</h2>
+    <div class="gaps">
+      <div class="gap"><span class="chip blocked">blocked</span><p><b>Reddit.</b> Reddit returns HTTP 403 to anonymous requests. It needs a Reddit API app and OAuth to include.</p></div>
+      <div class="gap"><span class="chip blocked">unreachable</span><p><b>Aptos, Avalanche, Filecoin forums.</b> Rate-limited or not answering. Worth retrying later.</p></div>
+      <div class="gap"><span class="chip partial">partial</span><p><b>Zcash and Cardano forums.</b> Stopped early for time. They have their newest posts; older years are missing.</p></div>
+      <div class="gap"><span class="chip partial">skew</span><p><b>Cardano, Zcash and Hacker News supply most catalog entries.</b> Cardano's weight is already lowered to 0.4. Ethereum research forums produce fewer but stronger entries. Weights per community should be reviewed against real use.</p></div>
+      <div class="gap"><span class="chip later">later</span><p><b>GitHub issues and discussions.</b> Configured for 24 organisations, including Bitcoin, Solana, Cosmos and Polkadot. It needs a GitHub token.</p></div>
+      <div class="gap"><span class="chip later">later</span><p><b>Solana Breakpoint, Polkadot and a16z crypto channels.</b> Their YouTube handles did not resolve, so they are not seeded yet.</p></div>
+      <div class="gap"><span class="chip later">later</span><p><b>Farcaster and X.</b> Planned sources that need API access (Neynar for Farcaster).</p></div>
+      <div class="gap"><span class="chip later">later</span><p><b>Weights.</b> All weights are starting guesses. They should be tuned against a hand-checked list of good and bad videos.</p></div>
+    </div>
+  </section>
+</div>
