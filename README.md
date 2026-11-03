@@ -7,7 +7,7 @@ not by views, follower counts or engagement.
 Every video shows *why* it is in the catalog: the original posts, who wrote them, which community,
 when it was last endorsed, any criticism, and a per-signal score breakdown.
 
-**Live:** https://web3tube.pages.dev · **How the ranking works:** https://claude.ai/artifact/83V4mKtQPN3xYngTuybyVA
+**Live:** https://web3tube.pages.dev · **How the ranking works:** https://web3tube.pages.dev/how-it-works.html ([source](web/how-it-works.html))
 
 Sources: 29 Discourse forums across Ethereum, Bitcoin, Zcash, Cardano, Polkadot, Cosmos, NEAR, DFINITY,
 Solana, Sui and L2s, plus Hacker News, with conference channels (Devcon, ETHGlobal, Solana, Polkadot,

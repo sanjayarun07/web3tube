@@ -254,6 +254,6 @@ fetch("catalog.json", { cache: "no-cache" }).then(r => r.ok ? r.json() : null).c
   VIDEOS = CAT.videos || [];
   BY_ID = new Map(VIDEOS.map(v => [v.id, v]));
   const s = CAT.stats || {};
-  $("#foot").innerHTML = VIDEOS.length ? `${VIDEOS.length} ${VIDEOS.length === 1 ? "video" : "videos"} from ${s.mentions ?? "?"} mentions across ${(s.communities || []).length} communities · built ${esc((CAT.generated || "").slice(0, 10))} · <a href="https://claude.ai/artifact/83V4mKtQPN3xYngTuybyVA?open_in_browser=1" target="_blank" rel="noopener">How it works</a>` : "";
+  $("#foot").innerHTML = VIDEOS.length ? `${VIDEOS.length} ${VIDEOS.length === 1 ? "video" : "videos"} from ${s.mentions ?? "?"} mentions across ${(s.communities || []).length} communities · built ${esc((CAT.generated || "").slice(0, 10))} · <a href="how-it-works.html">How it works</a>` : "";
   route();
 });
